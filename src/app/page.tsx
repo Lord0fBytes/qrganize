@@ -1,9 +1,52 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 
+async function getStats(supabase: any) {
+  // Get counts
+  const [locationsResult, itemsResult, unassignedItemsResult] = await Promise.all([
+    supabase.from('locations').select('id', { count: 'exact', head: true }),
+    supabase.from('items').select('id', { count: 'exact', head: true }),
+    supabase.from('items').select('id', { count: 'exact', head: true }).is('location_id', null),
+  ])
+
+  return {
+    totalLocations: locationsResult.count || 0,
+    totalItems: itemsResult.count || 0,
+    unassignedItems: unassignedItemsResult.count || 0,
+  }
+}
+
+async function getRecentActivity(supabase: any) {
+  const [recentLocations, recentItems] = await Promise.all([
+    supabase
+      .from('locations')
+      .select('id, name, created_at')
+      .order('created_at', { ascending: false })
+      .limit(5),
+    supabase
+      .from('items')
+      .select('id, name, created_at, location:locations(id, name)')
+      .order('created_at', { ascending: false })
+      .limit(5),
+  ])
+
+  return {
+    recentLocations: recentLocations.data || [],
+    recentItems: recentItems.data || [],
+  }
+}
+
 export default async function Home() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+
+  let stats = null
+  let recentActivity = null
+
+  if (user) {
+    stats = await getStats(supabase)
+    recentActivity = await getRecentActivity(supabase)
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -21,67 +64,200 @@ export default async function Home() {
         {user ? (
           /* Authenticated User View */
           <div className="mt-12">
-            <div className="bg-white rounded-lg shadow-sm p-8 mb-8">
-              <h2 className="text-2xl font-semibold mb-4">
-                Welcome back, {user.email}!
+            {/* Welcome Header */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-semibold text-gray-900">
+                Welcome back, {user.email?.split('@')[0]}!
               </h2>
-              <p className="text-gray-600 mb-6">
-                Get started by creating your first location or item.
+              <p className="text-gray-600 mt-1">
+                Here's an overview of your inventory
               </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Link
-                  href="/locations"
-                  className="block p-6 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
-                >
-                  <div className="text-3xl mb-2">📍</div>
-                  <h3 className="text-lg font-semibold mb-2">Locations</h3>
-                  <p className="text-gray-600 text-sm">
-                    Organize your spaces hierarchically - from rooms to boxes
-                  </p>
-                </Link>
-
-                <Link
-                  href="/items"
-                  className="block p-6 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
-                >
-                  <div className="text-3xl mb-2">📦</div>
-                  <h3 className="text-lg font-semibold mb-2">Items</h3>
-                  <p className="text-gray-600 text-sm">
-                    Track your items and assign them to locations
-                  </p>
-                </Link>
-
-                <Link
-                  href="/scan"
-                  className="block p-6 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
-                >
-                  <div className="text-3xl mb-2">📷</div>
-                  <h3 className="text-lg font-semibold mb-2">Scan QR Code</h3>
-                  <p className="text-gray-600 text-sm">
-                    Instantly navigate to locations or items by scanning
-                  </p>
-                </Link>
-
-                <div className="p-6 bg-gray-50 rounded-lg">
-                  <div className="text-3xl mb-2">🏷️</div>
-                  <h3 className="text-lg font-semibold mb-2">Generate Labels</h3>
-                  <p className="text-gray-600 text-sm">
-                    Print QR code labels for your locations and items
-                  </p>
-                </div>
-              </div>
             </div>
 
-            {/* Quick Stats */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-semibold mb-4">Coming soon:</h3>
-              <ul className="space-y-2 text-gray-600">
-                <li>• Dashboard with statistics</li>
-                <li>• Search across all locations and items</li>
-                <li>• Batch QR code generation</li>
-                <li>• Export/import data</li>
-              </ul>
+            {/* Statistics */}
+            {stats && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Total Locations</p>
+                      <p className="text-3xl font-bold text-blue-600 mt-2">{stats.totalLocations}</p>
+                    </div>
+                    <div className="text-4xl">📍</div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Link
+                      href="/locations"
+                      className="flex-1 text-center px-3 py-2 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 font-medium text-sm transition-colors"
+                    >
+                      View all
+                    </Link>
+                    <Link
+                      href="/locations/new"
+                      className="flex-1 text-center px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium text-sm transition-colors"
+                    >
+                      + Create
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Total Items</p>
+                      <p className="text-3xl font-bold text-green-600 mt-2">{stats.totalItems}</p>
+                    </div>
+                    <div className="text-4xl">📦</div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Link
+                      href="/items"
+                      className="flex-1 text-center px-3 py-2 bg-green-50 text-green-600 rounded-md hover:bg-green-100 font-medium text-sm transition-colors"
+                    >
+                      View all
+                    </Link>
+                    <Link
+                      href="/items/new"
+                      className="flex-1 text-center px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 font-medium text-sm transition-colors"
+                    >
+                      + Create
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Unassigned Items</p>
+                      <p className="text-3xl font-bold text-orange-600 mt-2">{stats.unassignedItems}</p>
+                    </div>
+                    <div className="text-4xl">⚠️</div>
+                  </div>
+                  {stats.unassignedItems > 0 ? (
+                    <Link
+                      href="/items"
+                      className="text-sm text-orange-600 hover:text-orange-800 mt-4 inline-block"
+                    >
+                      Assign locations →
+                    </Link>
+                  ) : (
+                    <p className="text-sm text-green-600 mt-4">All items assigned!</p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Recent Activity */}
+            {recentActivity && (recentActivity.recentLocations.length > 0 || recentActivity.recentItems.length > 0) && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                {/* Recent Locations */}
+                {recentActivity.recentLocations.length > 0 && (
+                  <div className="bg-white rounded-lg shadow-sm p-6">
+                    <h3 className="text-lg font-semibold mb-4 flex items-center justify-between">
+                      Recent Locations
+                      <Link href="/locations" className="text-sm text-blue-600 hover:text-blue-800 font-normal">
+                        View all →
+                      </Link>
+                    </h3>
+                    <ul className="space-y-3">
+                      {recentActivity.recentLocations.map((location: any) => (
+                        <li key={location.id}>
+                          <Link
+                            href={`/location/${location.id}`}
+                            className="flex items-center gap-3 p-2 rounded hover:bg-gray-50 transition-colors"
+                          >
+                            <span className="text-xl">📍</span>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-gray-900 truncate">
+                                {location.name}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {new Date(location.created_at).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Recent Items */}
+                {recentActivity.recentItems.length > 0 && (
+                  <div className="bg-white rounded-lg shadow-sm p-6">
+                    <h3 className="text-lg font-semibold mb-4 flex items-center justify-between">
+                      Recent Items
+                      <Link href="/items" className="text-sm text-green-600 hover:text-green-800 font-normal">
+                        View all →
+                      </Link>
+                    </h3>
+                    <ul className="space-y-3">
+                      {recentActivity.recentItems.map((item: any) => (
+                        <li key={item.id}>
+                          <Link
+                            href={`/item/${item.id}`}
+                            className="flex items-center gap-3 p-2 rounded hover:bg-gray-50 transition-colors"
+                          >
+                            <span className="text-xl">📦</span>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-gray-900 truncate">
+                                {item.name}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {item.location ? `📍 ${item.location.name}` : 'Unassigned'} • {new Date(item.created_at).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Navigation Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Link
+                href="/locations"
+                className="block p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div className="text-3xl mb-2">📍</div>
+                <h3 className="text-lg font-semibold mb-2">Browse Locations</h3>
+                <p className="text-gray-600 text-sm">
+                  Explore your hierarchical locations
+                </p>
+              </Link>
+
+              <Link
+                href="/items"
+                className="block p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div className="text-3xl mb-2">📦</div>
+                <h3 className="text-lg font-semibold mb-2">Browse Items</h3>
+                <p className="text-gray-600 text-sm">
+                  View and manage all your items
+                </p>
+              </Link>
+
+              <Link
+                href="/scan"
+                className="block p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div className="text-3xl mb-2">📷</div>
+                <h3 className="text-lg font-semibold mb-2">Scan QR Code</h3>
+                <p className="text-gray-600 text-sm">
+                  Quick navigation via QR scanning
+                </p>
+              </Link>
+
+              <div className="p-6 bg-gray-50 rounded-lg">
+                <div className="text-3xl mb-2">🏷️</div>
+                <h3 className="text-lg font-semibold mb-2">QR Labels</h3>
+                <p className="text-gray-600 text-sm">
+                  Coming soon: Generate printable labels
+                </p>
+              </div>
             </div>
           </div>
         ) : (
