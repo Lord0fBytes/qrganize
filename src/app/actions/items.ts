@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { generateSlug } from '@/lib/slugify'
 
 export async function getItems(locationId?: string | null) {
   const supabase = await createClient()
@@ -14,7 +15,7 @@ export async function getItems(locationId?: string | null) {
 
   const query = supabase
     .from('items')
-    .select('*, location:locations(id, name)')
+    .select('*, location:locations(id, slug, name)')
     .eq('user_id', user.id)
     .order('name', { ascending: true })
 
@@ -35,7 +36,7 @@ export async function getItems(locationId?: string | null) {
   return { items: data || [], error: null }
 }
 
-export async function getItem(id: string) {
+export async function getItem(slug: string) {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
@@ -45,8 +46,8 @@ export async function getItem(id: string) {
 
   const { data, error } = await supabase
     .from('items')
-    .select('*, location:locations(id, name)')
-    .eq('id', id)
+    .select('*, location:locations(id, slug, name)')
+    .eq('slug', slug)
     .eq('user_id', user.id)
     .single()
 
@@ -69,11 +70,49 @@ export async function createItem(formData: FormData) {
   const description = formData.get('description') as string
   const locationId = formData.get('location_id') as string | null
   const quantity = formData.get('quantity') as string
+  const customSlug = formData.get('slug') as string
+
+  // Use custom slug if provided, otherwise generate from name
+  let slug = customSlug && customSlug.trim() ? customSlug.trim() : generateSlug(name)
+
+  // Ensure slug is unique by appending numbers if needed
+  let isUnique = false
+  let counter = 0
+  let finalSlug = slug
+
+  while (!isUnique) {
+    const { data: existing } = await supabase
+      .from('items')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('slug', finalSlug)
+      .single()
+
+    if (!existing) {
+      isUnique = true
+    } else {
+      counter++
+      finalSlug = `${slug}-${counter}`
+    }
+  }
+
+  // Get location slug if location_id is provided
+  let locationSlug: string | null = null
+  if (locationId) {
+    const { data: location } = await supabase
+      .from('locations')
+      .select('slug')
+      .eq('id', locationId)
+      .single()
+
+    locationSlug = location?.slug || null
+  }
 
   const { data, error } = await supabase
     .from('items')
     .insert({
       name,
+      slug: finalSlug,
       description: description || null,
       location_id: locationId || null,
       quantity: quantity ? parseInt(quantity) : 1,
@@ -87,11 +126,11 @@ export async function createItem(formData: FormData) {
   }
 
   revalidatePath('/items')
-  if (locationId) {
-    revalidatePath(`/location/${locationId}`)
+  if (locationSlug) {
+    revalidatePath(`/location/${locationSlug}`)
   }
 
-  redirect(`/item/${data.id}`)
+  redirect(`/item/${data.slug}`)
 }
 
 export async function updateItem(id: string, formData: FormData) {
@@ -106,6 +145,32 @@ export async function updateItem(id: string, formData: FormData) {
   const description = formData.get('description') as string
   const locationId = formData.get('location_id') as string | null
   const quantity = formData.get('quantity') as string
+  const customSlug = formData.get('slug') as string
+
+  // Use custom slug if provided, otherwise generate from name
+  let slug = customSlug && customSlug.trim() ? customSlug.trim() : generateSlug(name)
+
+  // Ensure slug is unique (excluding current item)
+  let isUnique = false
+  let counter = 0
+  let finalSlug = slug
+
+  while (!isUnique) {
+    const { data: existing } = await supabase
+      .from('items')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('slug', finalSlug)
+      .neq('id', id)
+      .single()
+
+    if (!existing) {
+      isUnique = true
+    } else {
+      counter++
+      finalSlug = `${slug}-${counter}`
+    }
+  }
 
   // Get old location for cache invalidation
   const { data: oldItem } = await supabase
@@ -114,10 +179,35 @@ export async function updateItem(id: string, formData: FormData) {
     .eq('id', id)
     .single()
 
+  // Get location slugs for cache invalidation
+  let oldLocationSlug: string | null = null
+  let newLocationSlug: string | null = null
+
+  if (oldItem?.location_id) {
+    const { data: oldLocation } = await supabase
+      .from('locations')
+      .select('slug')
+      .eq('id', oldItem.location_id)
+      .single()
+
+    oldLocationSlug = oldLocation?.slug || null
+  }
+
+  if (locationId) {
+    const { data: newLocation } = await supabase
+      .from('locations')
+      .select('slug')
+      .eq('id', locationId)
+      .single()
+
+    newLocationSlug = newLocation?.slug || null
+  }
+
   const { error } = await supabase
     .from('items')
     .update({
       name,
+      slug: finalSlug,
       description: description || null,
       location_id: locationId || null,
       quantity: quantity ? parseInt(quantity) : 1,
@@ -130,17 +220,17 @@ export async function updateItem(id: string, formData: FormData) {
   }
 
   revalidatePath('/items')
-  revalidatePath(`/item/${id}`)
+  revalidatePath(`/item/${finalSlug}`)
 
   // Invalidate old and new location pages
-  if (oldItem?.location_id) {
-    revalidatePath(`/location/${oldItem.location_id}`)
+  if (oldLocationSlug) {
+    revalidatePath(`/location/${oldLocationSlug}`)
   }
-  if (locationId) {
-    revalidatePath(`/location/${locationId}`)
+  if (newLocationSlug) {
+    revalidatePath(`/location/${newLocationSlug}`)
   }
 
-  redirect(`/item/${id}`)
+  redirect(`/item/${finalSlug}`)
 }
 
 export async function deleteItem(id: string) {
@@ -151,12 +241,23 @@ export async function deleteItem(id: string) {
     redirect('/login')
   }
 
-  // Get the location_id before deleting
+  // Get the location info before deleting
   const { data: item } = await supabase
     .from('items')
     .select('location_id')
     .eq('id', id)
     .single()
+
+  let locationSlug: string | null = null
+  if (item?.location_id) {
+    const { data: location } = await supabase
+      .from('locations')
+      .select('slug')
+      .eq('id', item.location_id)
+      .single()
+
+    locationSlug = location?.slug || null
+  }
 
   const { error } = await supabase
     .from('items')
@@ -169,9 +270,9 @@ export async function deleteItem(id: string) {
   }
 
   revalidatePath('/items')
-  if (item?.location_id) {
-    revalidatePath(`/location/${item.location_id}`)
-    redirect(`/location/${item.location_id}`)
+  if (locationSlug) {
+    revalidatePath(`/location/${locationSlug}`)
+    redirect(`/location/${locationSlug}`)
   } else {
     redirect('/items')
   }

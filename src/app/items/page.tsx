@@ -59,7 +59,7 @@ export default async function ItemsPage() {
               {items.map((item) => (
                 <li key={item.id}>
                   <Link
-                    href={`/item/${item.id}`}
+                    href={`/item/${item.slug}`}
                     className="block hover:bg-gray-50 transition-colors"
                   >
                     <div className="px-6 py-4">
