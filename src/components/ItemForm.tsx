@@ -15,6 +15,7 @@ interface ItemFormProps {
   }
   allLocations: Array<{ id: string; name: string }>
   preselectedLocationId?: string
+  prefilledSlug?: string
   onSubmit: (formData: FormData) => Promise<void>
   cancelHref: string
 }
@@ -24,11 +25,12 @@ export function ItemForm({
   initialData,
   allLocations,
   preselectedLocationId,
+  prefilledSlug,
   onSubmit,
   cancelHref
 }: ItemFormProps) {
-  const [slug, setSlug] = useState(initialData?.slug || '')
-  const [manuallyEdited, setManuallyEdited] = useState(false)
+  const [slug, setSlug] = useState(initialData?.slug || prefilledSlug || '')
+  const [manuallyEdited, setManuallyEdited] = useState(!!prefilledSlug)
   const slugInputRef = useRef<HTMLInputElement>(null)
 
   const handleNameBlur = (e: React.FocusEvent<HTMLInputElement>) => {

@@ -6,7 +6,7 @@ import { LocationForm } from '@/components/LocationForm'
 export default async function NewLocationPage({
   searchParams,
 }: {
-  searchParams: Promise<{ parent?: string }>
+  searchParams: Promise<{ parent?: string; slug?: string }>
 }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -17,6 +17,7 @@ export default async function NewLocationPage({
 
   const params = await searchParams
   const parentId = params.parent
+  const prefilledSlug = params.slug
 
   // If there's a parent, get its name for display
   let parentName = null
@@ -44,9 +45,17 @@ export default async function NewLocationPage({
         </div>
 
         <div className="bg-white rounded-lg shadow-sm p-6">
+          {prefilledSlug && (
+            <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-800">
+                <span className="font-medium">Legacy QR Code detected!</span> Creating location with slug: <code className="bg-blue-100 px-2 py-1 rounded">{prefilledSlug}</code>
+              </p>
+            </div>
+          )}
           <LocationForm
             mode="new"
             parentId={parentId}
+            prefilledSlug={prefilledSlug}
             onSubmit={createLocation}
             cancelHref={parentId ? `/location/${parentId}` : '/locations'}
           />
