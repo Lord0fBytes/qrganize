@@ -7,7 +7,7 @@ import { logout } from '@/app/actions/auth'
 
 interface SidebarProps {
   user: {
-    email: string | undefined
+    email?: string | undefined
   } | null
 }
 

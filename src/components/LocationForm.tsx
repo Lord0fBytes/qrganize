@@ -13,7 +13,7 @@ interface LocationFormProps {
   }
   parentId?: string
   prefilledSlug?: string
-  onSubmit: (formData: FormData) => Promise<void>
+  onSubmit: any
   cancelHref: string
 }
 
@@ -42,7 +42,7 @@ export function LocationForm({ mode, initialData, parentId, prefilledSlug, onSub
   }
 
   return (
-    <form>
+    <form action={onSubmit}>
       {parentId && <input type="hidden" name="parent_id" value={parentId} />}
 
       <div className="space-y-6">
@@ -110,7 +110,6 @@ export function LocationForm({ mode, initialData, parentId, prefilledSlug, onSub
       <div className="mt-6 flex gap-3">
         <button
           type="submit"
-          formAction={onSubmit}
           className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium"
         >
           {mode === 'new' ? 'Create Location' : 'Save Changes'}

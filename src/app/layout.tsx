@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Sidebar } from "@/components/Sidebar";
 import { TopBar } from "@/components/TopBar";
 import { Header } from "@/components/Header";
+import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import { createClient } from "@/lib/supabase/server";
 import "./globals.css";
 
@@ -20,6 +22,13 @@ export const metadata: Metadata = {
   title: "QRganize - Smart Location & Item Tracking",
   description: "Organize your items across locations with QR codes",
   manifest: "/manifest.json",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+    viewportFit: "cover",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -28,6 +37,7 @@ export const metadata: Metadata = {
   formatDetection: {
     telephone: false,
   },
+  themeColor: "#3b82f6",
 };
 
 export default async function RootLayout({
@@ -43,6 +53,8 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <ServiceWorkerRegister />
+        <InstallPrompt />
         {user ? (
           // Authenticated layout with sidebar
           <div className="flex h-screen overflow-hidden">
