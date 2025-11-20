@@ -16,7 +16,7 @@ interface ItemFormProps {
   allLocations: Array<{ id: string; name: string }>
   preselectedLocationId?: string
   prefilledSlug?: string
-  onSubmit: (formData: FormData) => Promise<void>
+  onSubmit: any
   cancelHref: string
 }
 
@@ -53,7 +53,7 @@ export function ItemForm({
   }
 
   return (
-    <form>
+    <form action={onSubmit}>
       <div className="space-y-6">
         <div>
           <label
@@ -164,7 +164,6 @@ export function ItemForm({
       <div className="mt-6 flex gap-3">
         <button
           type="submit"
-          formAction={onSubmit}
           className="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 font-medium"
         >
           {mode === 'new' ? 'Create Item' : 'Save Changes'}

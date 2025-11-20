@@ -59,7 +59,7 @@ export default async function Home() {
               Dashboard
             </h1>
             <p className="text-gray-600">
-              Welcome back, {user.email?.split('@')[0]}! Here's an overview of your inventory.
+              Welcome back, {user.email?.split('@')[0]}! Here&apos;s an overview of your inventory.
             </p>
           </div>
           {/* Statistics */}

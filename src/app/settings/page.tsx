@@ -53,8 +53,8 @@ export default async function SettingsPage() {
           <ul className="text-sm text-blue-800 space-y-1">
             <li>• Old QR codes with format <code className="bg-blue-100 px-1 rounded">/your-slug</code> will be recognized</li>
             <li>• The system will look up the slug in your selected target (items or locations)</li>
-            <li>• If found, you'll be redirected to the item or location page</li>
-            <li>• If not found, you'll be taken to a create form with the slug pre-filled</li>
+            <li>• If found, you&apos;ll be redirected to the item or location page</li>
+            <li>• If not found, you&apos;ll be taken to a create form with the slug pre-filled</li>
           </ul>
         </div>
       </div>

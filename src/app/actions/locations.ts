@@ -63,7 +63,7 @@ export async function getLocationPath(locationId: string): Promise<Array<{ id: s
   let currentId: string | null = locationId
 
   while (currentId) {
-    const { data, error } = await supabase
+    const { data, error }: { data: any; error: any } = await supabase
       .from('locations')
       .select('id, slug, name, parent_id')
       .eq('id', currentId)

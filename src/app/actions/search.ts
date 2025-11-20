@@ -79,15 +79,15 @@ export async function searchItems(
       }
     }
 
-    itemResults = items.map(item => ({
+    itemResults = items.map((item: any) => ({
       id: item.id,
       name: item.name,
       slug: item.slug,
       description: item.description,
       type: 'item' as const,
-      location: item.location ? {
-        name: item.location.name,
-        slug: item.location.slug
+      location: item.location && Array.isArray(item.location) && item.location[0] ? {
+        name: item.location[0].name,
+        slug: item.location[0].slug
       } : null,
       created_at: item.created_at
     }))
@@ -117,15 +117,15 @@ export async function searchItems(
       }
     }
 
-    locationResults = locations.map(location => ({
+    locationResults = locations.map((location: any) => ({
       id: location.id,
       name: location.name,
       slug: location.slug,
       description: location.description,
       type: 'location' as const,
-      parent: location.parent ? {
-        name: location.parent.name,
-        slug: location.parent.slug
+      parent: location.parent && Array.isArray(location.parent) && location.parent[0] ? {
+        name: location.parent[0].name,
+        slug: location.parent[0].slug
       } : null,
       created_at: location.created_at
     }))
