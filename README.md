@@ -21,16 +21,15 @@ A smart location and item tracking application built with Next.js 15 and PWA cap
 
 ## Getting Started
 
-### Prerequisites
+**For detailed setup instructions, see [SETUP.md](./SETUP.md)**
 
-- Node.js 18+ and npm
-- Supabase account
+### Quick Start
 
-### Installation
-
-```bash
-npm install
-```
+1. Install dependencies: `npm install`
+2. Create a Supabase project at [supabase.com](https://supabase.com)
+3. Run the database schema from `supabase/schema.sql`
+4. Copy `.env.local.example` to `.env.local` and add your Supabase credentials
+5. Start dev server: `npm run dev`
 
 ### Development
 
