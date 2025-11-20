@@ -59,7 +59,7 @@ export default async function LocationsPage() {
               {locations.map((location) => (
                 <li key={location.id}>
                   <Link
-                    href={`/location/${location.id}`}
+                    href={`/location/${location.slug}`}
                     className="block hover:bg-gray-50 transition-colors"
                   >
                     <div className="px-6 py-4">

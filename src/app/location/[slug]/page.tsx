@@ -8,7 +8,7 @@ import { QRCodeModal } from '@/components/QRCodeModal'
 export default async function LocationDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>
+  params: Promise<{ slug: string }>
 }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -17,25 +17,25 @@ export default async function LocationDetailPage({
     redirect('/login')
   }
 
-  const { id } = await params
-  const { location, error } = await getLocation(id)
+  const { slug } = await params
+  const { location, error } = await getLocation(slug)
 
   if (error || !location) {
     redirect('/locations')
   }
 
   // Get child locations
-  const { locations: childLocations } = await getLocations(id)
+  const { locations: childLocations } = await getLocations(location.id)
 
   // Get items in this location
   const { data: items } = await supabase
     .from('items')
     .select('*')
-    .eq('location_id', id)
+    .eq('location_id', location.id)
     .order('name', { ascending: true })
 
   // Get breadcrumb path
-  const path = await getLocationPath(id)
+  const path = await getLocationPath(location.id)
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -61,7 +61,7 @@ export default async function LocationDetailPage({
               {index === path.length - 1 ? (
                 <span className="text-gray-900 font-medium">{item.name}</span>
               ) : (
-                <Link href={`/location/${item.id}`} className="hover:text-gray-900">
+                <Link href={`/location/${item.slug}`} className="hover:text-gray-900">
                   {item.name}
                 </Link>
               )}
@@ -84,9 +84,9 @@ export default async function LocationDetailPage({
               </p>
             </div>
             <div className="ml-4 flex gap-2">
-              <QRCodeModal path={`/location/${id}`} label="Location QR Code" />
+              <QRCodeModal path={`/location/${slug}`} label="Location QR Code" />
               <Link
-                href={`/location/${id}/edit`}
+                href={`/location/${slug}/edit`}
                 className="p-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
                 title="Edit location"
                 aria-label="Edit location"
@@ -95,7 +95,7 @@ export default async function LocationDetailPage({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
               </Link>
-              <DeleteLocationButton locationId={id} locationName={location.name} />
+              <DeleteLocationButton locationId={location.id} locationName={location.name} />
             </div>
           </div>
         </div>
@@ -107,7 +107,7 @@ export default async function LocationDetailPage({
               Child Locations ({childLocations.length})
             </h2>
             <Link
-              href={`/locations/new?parent=${id}`}
+              href={`/locations/new?parent=${location.id}`}
               className="p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               title="Add location here"
               aria-label="Add location here"
@@ -128,7 +128,7 @@ export default async function LocationDetailPage({
                 {childLocations.map((child) => (
                   <li key={child.id}>
                     <Link
-                      href={`/location/${child.id}`}
+                      href={`/location/${child.slug}`}
                       className="block hover:bg-gray-50 transition-colors px-6 py-4"
                     >
                       <div className="flex items-center justify-between">
@@ -169,7 +169,7 @@ export default async function LocationDetailPage({
               Items ({items?.length || 0})
             </h2>
             <Link
-              href={`/items/new?location=${id}`}
+              href={`/items/new?location=${location.id}`}
               className="p-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
               title="Add item here"
               aria-label="Add item here"
@@ -190,7 +190,7 @@ export default async function LocationDetailPage({
                 {items.map((item) => (
                   <li key={item.id}>
                     <Link
-                      href={`/item/${item.id}`}
+                      href={`/item/${item.slug}`}
                       className="block hover:bg-gray-50 transition-colors px-6 py-4"
                     >
                       <div className="flex items-center justify-between">
