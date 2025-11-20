@@ -4,7 +4,11 @@ import { useEffect, useRef, useState } from 'react'
 import { Html5Qrcode } from 'html5-qrcode'
 import { useRouter } from 'next/navigation'
 
-export function QRScanner() {
+interface QRScannerProps {
+  legacyDomain?: string | null
+}
+
+export function QRScanner({ legacyDomain }: QRScannerProps) {
   const scannerRef = useRef<Html5Qrcode | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isScanning, setIsScanning] = useState(false)
@@ -97,7 +101,11 @@ export function QRScanner() {
       const url = new URL(decodedText)
       const currentOrigin = window.location.origin
 
-      if (url.origin === currentOrigin) {
+      // Check if it's from current origin OR legacy domain
+      const isCurrentDomain = url.origin === currentOrigin
+      const isLegacyDomain = legacyDomain && url.origin === legacyDomain
+
+      if (isCurrentDomain || isLegacyDomain) {
         // It's a QRganize URL - navigate to it
         const path = url.pathname
         stopScanner().then(() => {

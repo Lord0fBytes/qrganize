@@ -12,13 +12,14 @@ interface LocationFormProps {
     description: string | null
   }
   parentId?: string
+  prefilledSlug?: string
   onSubmit: (formData: FormData) => Promise<void>
   cancelHref: string
 }
 
-export function LocationForm({ mode, initialData, parentId, onSubmit, cancelHref }: LocationFormProps) {
-  const [slug, setSlug] = useState(initialData?.slug || '')
-  const [manuallyEdited, setManuallyEdited] = useState(false)
+export function LocationForm({ mode, initialData, parentId, prefilledSlug, onSubmit, cancelHref }: LocationFormProps) {
+  const [slug, setSlug] = useState(initialData?.slug || prefilledSlug || '')
+  const [manuallyEdited, setManuallyEdited] = useState(!!prefilledSlug)
   const slugInputRef = useRef<HTMLInputElement>(null)
 
   const handleNameBlur = (e: React.FocusEvent<HTMLInputElement>) => {

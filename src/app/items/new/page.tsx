@@ -16,7 +16,7 @@ async function getAllLocations(): Promise<Array<{ id: string; name: string; pare
 export default async function NewItemPage({
   searchParams,
 }: {
-  searchParams: Promise<{ location?: string }>
+  searchParams: Promise<{ location?: string; slug?: string }>
 }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -27,6 +27,7 @@ export default async function NewItemPage({
 
   const params = await searchParams
   const locationId = params.location
+  const prefilledSlug = params.slug
 
   // Get all locations for the dropdown
   const allLocations = await getAllLocations()
@@ -52,10 +53,18 @@ export default async function NewItemPage({
         </div>
 
         <div className="bg-white rounded-lg shadow-sm p-6">
+          {prefilledSlug && (
+            <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-800">
+                <span className="font-medium">Legacy QR Code detected!</span> Creating item with slug: <code className="bg-blue-100 px-2 py-1 rounded">{prefilledSlug}</code>
+              </p>
+            </div>
+          )}
           <ItemForm
             mode="new"
             allLocations={allLocations}
             preselectedLocationId={locationId}
+            prefilledSlug={prefilledSlug}
             onSubmit={createItem}
             cancelHref={locationId ? `/location/${locationId}` : '/items'}
           />
