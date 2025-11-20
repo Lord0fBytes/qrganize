@@ -49,32 +49,20 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Hero Section */}
-        <div className="text-center">
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">
-            Welcome to QRganize
-          </h1>
-          <p className="text-xl text-gray-600 mb-8">
-            Smart location & item tracking with QR codes
-          </p>
-        </div>
-
-        {user ? (
-          /* Authenticated User View */
-          <div className="mt-12">
-            {/* Welcome Header */}
-            <div className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900">
-                Welcome back, {user.email?.split('@')[0]}!
-              </h2>
-              <p className="text-gray-600 mt-1">
-                Here's an overview of your inventory
-              </p>
-            </div>
-
-            {/* Statistics */}
+    <>
+      {user ? (
+        /* Authenticated User View - Dashboard */
+        <div className="p-8">
+          {/* Page Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Dashboard
+            </h1>
+            <p className="text-gray-600">
+              Welcome back, {user.email?.split('@')[0]}! Here's an overview of your inventory.
+            </p>
+          </div>
+          {/* Statistics */}
             {stats && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="bg-white rounded-lg shadow-sm p-6">
@@ -215,54 +203,22 @@ export default async function Home() {
                 )}
               </div>
             )}
-
-            {/* Navigation Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Link
-                href="/locations"
-                className="block p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
-              >
-                <div className="text-3xl mb-2">📍</div>
-                <h3 className="text-lg font-semibold mb-2">Browse Locations</h3>
-                <p className="text-gray-600 text-sm">
-                  Explore your hierarchical locations
-                </p>
-              </Link>
-
-              <Link
-                href="/items"
-                className="block p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
-              >
-                <div className="text-3xl mb-2">📦</div>
-                <h3 className="text-lg font-semibold mb-2">Browse Items</h3>
-                <p className="text-gray-600 text-sm">
-                  View and manage all your items
-                </p>
-              </Link>
-
-              <Link
-                href="/scan"
-                className="block p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
-              >
-                <div className="text-3xl mb-2">📷</div>
-                <h3 className="text-lg font-semibold mb-2">Scan QR Code</h3>
-                <p className="text-gray-600 text-sm">
-                  Quick navigation via QR scanning
-                </p>
-              </Link>
-
-              <div className="p-6 bg-gray-50 rounded-lg">
-                <div className="text-3xl mb-2">🏷️</div>
-                <h3 className="text-lg font-semibold mb-2">QR Labels</h3>
-                <p className="text-gray-600 text-sm">
-                  Coming soon: Generate printable labels
-                </p>
-              </div>
+        </div>
+      ) : (
+        /* Unauthenticated User View */
+        <div className="min-h-screen bg-gray-50">
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            {/* Hero Section */}
+            <div className="text-center">
+              <h1 className="text-5xl font-bold text-gray-900 mb-4">
+                Welcome to QRganize
+              </h1>
+              <p className="text-xl text-gray-600 mb-8">
+                Smart location & item tracking with QR codes
+              </p>
             </div>
-          </div>
-        ) : (
-          /* Unauthenticated User View */
-          <div className="mt-12">
+
+            <div className="mt-12">
             <div className="bg-white rounded-lg shadow-sm p-8 text-center">
               <h2 className="text-2xl font-semibold mb-4">
                 Get started with QRganize
@@ -313,9 +269,10 @@ export default async function Home() {
                 </p>
               </div>
             </div>
-          </div>
-        )}
-      </main>
-    </div>
+            </div>
+          </main>
+        </div>
+      )}
+    </>
   );
 }
