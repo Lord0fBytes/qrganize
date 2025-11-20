@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { DeleteItemButton } from '@/components/DeleteItemButton'
+import { QRCodeModal } from '@/components/QRCodeModal'
 
 export default async function ItemDetailPage({
   params,
@@ -74,11 +75,16 @@ export default async function ItemDetailPage({
               </div>
             </div>
             <div className="ml-4 flex gap-2">
+              <QRCodeModal path={`/item/${id}`} label="Item QR Code" />
               <Link
                 href={`/item/${id}/edit`}
-                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 font-medium"
+                className="p-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+                title="Edit item"
+                aria-label="Edit item"
               >
-                Edit
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
               </Link>
               <DeleteItemButton itemId={id} itemName={item.name} />
             </div>
@@ -123,18 +129,6 @@ export default async function ItemDetailPage({
               </Link>
             </div>
           )}
-        </div>
-
-        {/* QR Code Section - Placeholder for future */}
-        <div className="mt-6 bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">QR Code</h2>
-          <div className="p-8 bg-gray-50 rounded-lg text-center">
-            <div className="text-5xl mb-3">🏷️</div>
-            <p className="text-gray-500">QR code generation coming soon</p>
-            <p className="text-sm text-gray-400 mt-1">
-              You'll be able to print QR code labels for this item
-            </p>
-          </div>
         </div>
       </div>
     </div>

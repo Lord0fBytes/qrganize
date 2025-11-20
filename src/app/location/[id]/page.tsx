@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { DeleteLocationButton } from '@/components/DeleteLocationButton'
+import { QRCodeModal } from '@/components/QRCodeModal'
 
 export default async function LocationDetailPage({
   params,
@@ -83,11 +84,16 @@ export default async function LocationDetailPage({
               </p>
             </div>
             <div className="ml-4 flex gap-2">
+              <QRCodeModal path={`/location/${id}`} label="Location QR Code" />
               <Link
                 href={`/location/${id}/edit`}
-                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 font-medium"
+                className="p-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+                title="Edit location"
+                aria-label="Edit location"
               >
-                Edit
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
               </Link>
               <DeleteLocationButton locationId={id} locationName={location.name} />
             </div>
@@ -102,9 +108,13 @@ export default async function LocationDetailPage({
             </h2>
             <Link
               href={`/locations/new?parent=${id}`}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium text-sm"
+              className="p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              title="Add location here"
+              aria-label="Add location here"
             >
-              + Add Location Here
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
             </Link>
           </div>
 
@@ -160,9 +170,13 @@ export default async function LocationDetailPage({
             </h2>
             <Link
               href={`/items/new?location=${id}`}
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 font-medium text-sm"
+              className="p-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+              title="Add item here"
+              aria-label="Add item here"
             >
-              + Add Item Here
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
             </Link>
           </div>
 
