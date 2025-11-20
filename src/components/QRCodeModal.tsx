@@ -19,14 +19,15 @@ export function QRCodeModal({ path, label = 'QR Code' }: QRCodeModalProps) {
       const fullUrl = `${window.location.origin}${path}`
 
       // Generate QR code as data URL (base64 PNG)
+      // Using high error correction and larger size for better scanning
       const dataUrl = await QRCode.toDataURL(fullUrl, {
-        width: 256,
-        margin: 2,
+        width: 512,
+        margin: 4,
         color: {
           dark: '#000000',
           light: '#FFFFFF',
         },
-        errorCorrectionLevel: 'M',
+        errorCorrectionLevel: 'H', // High - tolerates up to 30% damage
       })
 
       setQrCodeDataUrl(dataUrl)

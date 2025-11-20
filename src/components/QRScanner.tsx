@@ -75,12 +75,17 @@ export function QRScanner() {
 
     try {
       setError(null)
+      setLastScanned(null)
+
+      // Create scanner instance
       const scanner = new Html5Qrcode('qr-reader-file')
+
+      // Scan with show image enabled to help with debugging
       const result = await scanner.scanFile(file, true)
       onScanSuccess(result)
     } catch (err) {
       console.error('Error scanning file:', err)
-      setError('Could not read QR code from image. Please try a clearer image.')
+      setError('Could not read QR code from image. Please try:\n• Taking photo in better lighting\n• Getting closer to the QR code\n• Ensuring the QR code is in focus\n• Using a QRganize-generated code')
     }
   }
 
