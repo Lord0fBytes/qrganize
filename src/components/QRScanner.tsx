@@ -10,12 +10,22 @@ export function QRScanner() {
   const [isScanning, setIsScanning] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [lastScanned, setLastScanned] = useState<string | null>(null)
-  const [scanMode, setScanMode] = useState<'camera' | 'file'>('camera')
+
+  // Detect iOS Safari and default to file mode
+  const isIOS = () => {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
+  }
+
+  const [scanMode, setScanMode] = useState<'camera' | 'file'>(
+    isIOS() ? 'file' : 'camera'
+  )
   const router = useRouter()
 
   useEffect(() => {
-    // Try to start camera scanner
-    startScanner()
+    // Only try camera if not iOS
+    if (!isIOS()) {
+      startScanner()
+    }
 
     return () => {
       stopScanner()
@@ -176,6 +186,7 @@ export function QRScanner() {
               ref={fileInputRef}
               type="file"
               accept="image/*"
+              capture="environment"
               onChange={handleFileUpload}
               className="hidden"
               id="qr-file-input"
