@@ -22,6 +22,7 @@ export function Sidebar({ user }: SidebarProps) {
     { href: '/', label: 'Home', icon: '🏠' },
     { href: '/locations', label: 'Locations', icon: '📍' },
     { href: '/items', label: 'Items', icon: '📦' },
+    { href: '/search', label: 'Search', icon: '🔍' },
     { href: '/scan', label: 'Scan', icon: '📷' },
     { href: '/settings', label: 'Settings', icon: '⚙️' },
   ]
@@ -180,7 +181,7 @@ export function Sidebar({ user }: SidebarProps) {
         {/* Desktop Only: Version Footer */}
         <div className="hidden lg:block p-4 border-t border-gray-800">
           <div className="text-xs text-gray-500 text-center">
-            QRganize v0.6.0
+            QRganize v0.7.0
           </div>
         </div>
       </aside>
