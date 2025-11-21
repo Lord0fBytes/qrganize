@@ -17,19 +17,19 @@ export default async function ScanPage() {
   const legacyDomain = settings?.legacy_qr_domain || null
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Scan QR Code</h1>
-              <p className="mt-2 text-gray-600">
+              <h1 className="text-3xl font-bold text-slate-100">Scan QR Code</h1>
+              <p className="mt-2 text-slate-400">
                 Scan a QRganize QR code to view location or item details
               </p>
             </div>
             <Link
               href="/"
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 font-medium"
+              className="px-4 py-2 bg-slate-700 text-slate-200 rounded-md hover:bg-slate-600 font-semibold flex items-center justify-center"
             >
               Cancel
             </Link>

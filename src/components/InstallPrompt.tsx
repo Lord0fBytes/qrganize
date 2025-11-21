@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Smartphone, X } from "lucide-react";
 
 export function InstallPrompt() {
   const [installPrompt, setInstallPrompt] = useState<any>(null);
@@ -80,24 +81,24 @@ export function InstallPrompt() {
   return (
     <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 bg-blue-600 text-white rounded-lg shadow-lg p-4 z-50 animate-slide-up">
       <div className="flex items-start gap-3">
-        <div className="flex-shrink-0 text-2xl">
-          📱
+        <div className="flex-shrink-0">
+          <Smartphone className="w-6 h-6" />
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold mb-1">Install QRganize</h3>
+          <h3 className="font-bold mb-1">Install QRganize</h3>
           <p className="text-sm text-blue-100 mb-3">
             Install our app for quick access and offline use. Works great on mobile and desktop!
           </p>
           <div className="flex gap-2">
             <button
               onClick={handleInstallClick}
-              className="px-4 py-2 bg-white text-blue-600 rounded-md hover:bg-blue-50 font-medium text-sm"
+              className="px-4 py-2 bg-white text-blue-600 rounded-md hover:bg-blue-50 font-semibold text-sm"
             >
               Install
             </button>
             <button
               onClick={handleDismiss}
-              className="px-4 py-2 bg-blue-500 hover:bg-blue-400 rounded-md font-medium text-sm"
+              className="px-4 py-2 bg-blue-500 hover:bg-blue-400 rounded-md font-semibold text-sm"
             >
               Maybe Later
             </button>
@@ -108,7 +109,7 @@ export function InstallPrompt() {
           className="flex-shrink-0 text-blue-200 hover:text-white"
           aria-label="Close"
         >
-          ✕
+          <X className="w-5 h-5" />
         </button>
       </div>
     </div>

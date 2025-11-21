@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import { Sidebar } from "@/components/Sidebar";
 import { TopBar } from "@/components/TopBar";
 import { Header } from "@/components/Header";
@@ -8,14 +8,11 @@ import { InstallPrompt } from "@/components/InstallPrompt";
 import { createClient } from "@/lib/supabase/server";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -51,27 +48,27 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} font-sans antialiased`}
       >
         <ServiceWorkerRegister />
         <InstallPrompt />
         {user ? (
           // Authenticated layout with sidebar
-          <div className="flex h-screen overflow-hidden">
+          <div className="flex h-screen overflow-hidden bg-slate-900">
             <Sidebar user={user} />
             <div className="flex-1 flex flex-col overflow-hidden">
               <TopBar />
-              <main className="flex-1 overflow-y-auto bg-gray-50">
+              <main className="flex-1 overflow-y-auto bg-slate-900">
                 {children}
               </main>
             </div>
           </div>
         ) : (
           // Unauthenticated layout with header
-          <>
+          <div className="min-h-screen bg-slate-900">
             <Header />
             {children}
-          </>
+          </div>
         )}
       </body>
     </html>
