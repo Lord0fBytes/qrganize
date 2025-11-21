@@ -39,7 +39,7 @@ export default async function ItemsPage() {
 
         {items.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-            <div className="text-5xl mb-4">📦</div>
+            <div className="text-6xl mb-4">📦</div>
             <h2 className="text-xl font-semibold text-gray-900 mb-2">
               No items yet
             </h2>
@@ -65,8 +65,9 @@ export default async function ItemsPage() {
                     <div className="px-6 py-4">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
-                          <h3 className="text-lg font-medium text-gray-900">
-                            📦 {item.name}
+                          <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                            <span className="text-xl">📦</span>
+                            {item.name}
                           </h3>
                           {item.description && (
                             <p className="mt-1 text-sm text-gray-600">
@@ -75,7 +76,7 @@ export default async function ItemsPage() {
                           )}
                           <div className="mt-2 flex items-center gap-4 text-xs text-gray-500">
                             {item.location && (
-                              <span className="flex items-center gap-1">
+                              <span>
                                 📍 {item.location.name}
                               </span>
                             )}

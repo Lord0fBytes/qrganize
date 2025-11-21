@@ -154,7 +154,7 @@ export default async function Home() {
                             href={`/location/${location.id}`}
                             className="flex items-center gap-3 p-2 rounded hover:bg-gray-50 transition-colors"
                           >
-                            <span className="text-xl">📍</span>
+                            <span className="text-2xl">📍</span>
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium text-gray-900 truncate">
                                 {location.name}
@@ -186,7 +186,7 @@ export default async function Home() {
                             href={`/item/${item.id}`}
                             className="flex items-center gap-3 p-2 rounded hover:bg-gray-50 transition-colors"
                           >
-                            <span className="text-xl">📦</span>
+                            <span className="text-2xl">📦</span>
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium text-gray-900 truncate">
                                 {item.name}
