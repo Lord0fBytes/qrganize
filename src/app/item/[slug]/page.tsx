@@ -25,15 +25,15 @@ export default async function ItemDetailPage({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
-        <nav className="mb-4 flex items-center text-sm text-gray-600">
-          <Link href="/items" className="hover:text-gray-900">
+        <nav className="mb-4 flex items-center text-sm text-slate-400">
+          <Link href="/items" className="hover:text-slate-100 flex items-center">
             Items
           </Link>
           <svg
-            className="mx-2 h-4 w-4"
+            className="mx-2 h-4 w-4 flex-shrink-0"
             fill="none"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -43,32 +43,32 @@ export default async function ItemDetailPage({
           >
             <path d="M9 5l7 7-7 7"></path>
           </svg>
-          <span className="text-gray-900 font-medium">{item.name}</span>
+          <span className="text-slate-100 font-medium flex items-center">{item.name}</span>
         </nav>
 
         {/* Item Header */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+        <div className="bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6 mb-6">
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-4xl">📦</span>
-                <h1 className="text-3xl font-bold text-gray-900">
+                <h1 className="text-3xl font-bold text-slate-100">
                   {item.name}
                 </h1>
               </div>
               {item.description && (
-                <p className="mt-2 text-gray-600">{item.description}</p>
+                <p className="mt-2 text-slate-400">{item.description}</p>
               )}
               <div className="mt-4 flex flex-wrap gap-4 text-sm">
                 {item.quantity && (
                   <div className="flex items-center gap-1">
-                    <span className="font-medium text-gray-700">Quantity:</span>
-                    <span className="text-gray-600">{item.quantity}</span>
+                    <span className="font-medium text-slate-300">Quantity:</span>
+                    <span className="text-slate-400">{item.quantity}</span>
                   </div>
                 )}
                 <div className="flex items-center gap-1">
-                  <span className="font-medium text-gray-700">Created:</span>
-                  <span className="text-gray-600">
+                  <span className="font-medium text-slate-300">Created:</span>
+                  <span className="text-slate-400">
                     {new Date(item.created_at).toLocaleDateString()}
                   </span>
                 </div>
@@ -78,7 +78,7 @@ export default async function ItemDetailPage({
               <QRCodeModal path={`/item/${slug}`} label="Item QR Code" />
               <Link
                 href={`/item/${slug}/edit`}
-                className="p-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+                className="p-2 bg-slate-700 text-slate-200 rounded-md hover:bg-slate-600 transition-colors flex items-center justify-center"
                 title="Edit item"
                 aria-label="Edit item"
               >
@@ -92,20 +92,20 @@ export default async function ItemDetailPage({
         </div>
 
         {/* Location Information */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Location</h2>
+        <div className="bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6">
+          <h2 className="text-xl font-semibold text-slate-100 mb-4">Location</h2>
           {item.location ? (
             <Link
               href={`/location/${item.location.slug}`}
-              className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+              className="flex items-center gap-3 p-4 bg-blue-900/30 border border-blue-700/50 rounded-lg hover:bg-blue-800/40 transition-colors"
             >
               <span className="text-2xl">📍</span>
               <div>
-                <h3 className="font-medium text-gray-900">{item.location.name}</h3>
-                <p className="text-sm text-gray-600">Click to view location details</p>
+                <h3 className="font-medium text-slate-100">{item.location.name}</h3>
+                <p className="text-sm text-slate-400">Click to view location details</p>
               </div>
               <svg
-                className="ml-auto h-5 w-5 text-gray-400"
+                className="ml-auto h-5 w-5 text-slate-400"
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -117,13 +117,13 @@ export default async function ItemDetailPage({
               </svg>
             </Link>
           ) : (
-            <div className="p-4 bg-gray-50 rounded-lg text-center">
-              <p className="text-gray-500 mb-3">
+            <div className="p-4 bg-slate-700 rounded-lg text-center">
+              <p className="text-slate-400 mb-3">
                 This item is not assigned to any location
               </p>
               <Link
                 href={`/item/${slug}/edit`}
-                className="inline-block px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium text-sm"
+                className="inline-block px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-semibold text-sm"
               >
                 Assign to Location
               </Link>

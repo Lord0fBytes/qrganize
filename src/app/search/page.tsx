@@ -19,11 +19,11 @@ export default async function SearchPage({
   const initialFilter = (params.filter as 'all' | 'items' | 'locations') || 'all'
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Search</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-slate-100">Search</h1>
+          <p className="mt-2 text-slate-400">
             Search for items and locations by name or description
           </p>
         </div>
