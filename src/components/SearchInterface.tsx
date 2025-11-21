@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { searchItems, type SearchFilter, type SearchResults } from '@/app/actions/search'
+import SkeletonSearchResults from './SkeletonSearchResults'
 
 interface SearchInterfaceProps {
   initialQuery: string
@@ -130,6 +131,11 @@ export function SearchInterface({ initialQuery, initialFilter }: SearchInterface
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
           <p className="text-red-800">Error: {error}</p>
         </div>
+      )}
+
+      {/* Loading State */}
+      {loading && (
+        <SkeletonSearchResults />
       )}
 
       {/* Results */}

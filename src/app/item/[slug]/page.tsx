@@ -50,11 +50,13 @@ export default async function ItemDetailPage({
         <div className="bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6 mb-6">
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <span className="text-4xl">📦</span>
-                <h1 className="text-3xl font-bold text-slate-100">
-                  {item.name}
-                </h1>
+              <div className="flex items-start gap-3 mb-2">
+                <span className="text-4xl leading-none">📦</span>
+                <div className="flex-1">
+                  <h1 className="text-3xl font-bold text-slate-100 leading-tight">
+                    {item.name}
+                  </h1>
+                </div>
               </div>
               {item.description && (
                 <p className="mt-2 text-slate-400">{item.description}</p>
