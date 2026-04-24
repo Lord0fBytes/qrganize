@@ -11,6 +11,7 @@ interface QRScannerProps {
 export function QRScanner({ legacyDomain }: QRScannerProps) {
   const scannerRef = useRef<Html5Qrcode | null>(null)
   const isStartingRef = useRef(false)
+  const isRunningRef = useRef(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isScanning, setIsScanning] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -27,13 +28,17 @@ export function QRScanner({ legacyDomain }: QRScannerProps) {
   const router = useRouter()
 
   useEffect(() => {
-    // Only try camera if not iOS
     if (!isIOS()) {
       startScanner()
     }
 
     return () => {
-      stopScanner()
+      const scanner = scannerRef.current
+      if (scanner && isRunningRef.current) {
+        scannerRef.current = null
+        isRunningRef.current = false
+        scanner.stop().catch(() => {}).finally(() => scanner.clear())
+      }
     }
   }, [])
 
@@ -55,11 +60,13 @@ export function QRScanner({ legacyDomain }: QRScannerProps) {
         onScanFailure
       )
 
+      isRunningRef.current = true
       setIsScanning(true)
       setScanMode('camera')
     } catch (err) {
       console.error('Error starting scanner:', err)
       scannerRef.current = null
+      isRunningRef.current = false
       setScanMode('file')
       setError('Camera not available. Please upload a QR code image instead.')
     } finally {
@@ -69,8 +76,9 @@ export function QRScanner({ legacyDomain }: QRScannerProps) {
 
   const stopScanner = async () => {
     const scanner = scannerRef.current
-    if (scanner) {
+    if (scanner && isRunningRef.current) {
       scannerRef.current = null
+      isRunningRef.current = false
       try {
         await scanner.stop()
         scanner.clear()
