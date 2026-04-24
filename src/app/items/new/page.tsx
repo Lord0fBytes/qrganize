@@ -1,50 +1,30 @@
 import { createItem } from '@/app/actions/items'
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
+import { getLocations, getLocation } from '@/app/actions/locations'
 import { ItemForm } from '@/components/ItemForm'
-
-async function getAllLocations(): Promise<Array<{ id: string; name: string; parent_id: string | null }>> {
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('locations')
-    .select('id, name, parent_id')
-    .order('name', { ascending: true })
-
-  return data || []
-}
 
 export default async function NewItemPage({
   searchParams,
 }: {
   searchParams: Promise<{ location?: string; slug?: string }>
 }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/login')
-  }
-
   const params = await searchParams
   const locationId = params.location
   const prefilledSlug = params.slug
 
-  // Get all locations for the dropdown
-  const allLocations = await getAllLocations()
+  const { locations: allLocationsRaw } = await getLocations()
+  const allLocations = allLocationsRaw as Array<{ id: string; name: string }>
 
-  // If there's a pre-selected location, get its name
   let selectedLocation = null
   if (locationId) {
-    selectedLocation = allLocations.find(loc => loc.id === locationId)
+    const { location } = await getLocation(locationId)
+    selectedLocation = location
   }
 
   return (
     <div className="min-h-screen py-8">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-100">
-            Create New Item
-          </h1>
+          <h1 className="text-3xl font-bold text-slate-100">Create New Item</h1>
           {selectedLocation && (
             <p className="mt-2 text-slate-400">
               In location: <span className="font-medium">{selectedLocation.name}</span>

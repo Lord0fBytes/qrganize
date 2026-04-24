@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { sql } from '@/lib/db'
 
 export type SearchFilter = 'all' | 'items' | 'locations'
 
@@ -10,14 +10,8 @@ export interface SearchResultItem {
   slug: string
   description: string | null
   type: 'item' | 'location'
-  location?: {
-    name: string
-    slug: string
-  } | null
-  parent?: {
-    name: string
-    slug: string
-  } | null
+  location?: { name: string; slug: string } | null
+  parent?: { name: string; slug: string } | null
   created_at: string
 }
 
@@ -27,107 +21,57 @@ export interface SearchResults {
   totalCount: number
 }
 
-/**
- * Search for items and locations by name or description
- */
 export async function searchItems(
   query: string,
   filter: SearchFilter = 'all'
 ): Promise<{ results: SearchResults; error: string | null }> {
-  if (!query || query.trim().length === 0) {
-    return {
-      results: { items: [], locations: [], totalCount: 0 },
-      error: null
-    }
+  if (!query?.trim()) {
+    return { results: { items: [], locations: [], totalCount: 0 }, error: null }
   }
 
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    return {
-      results: { items: [], locations: [], totalCount: 0 },
-      error: 'Not authenticated'
-    }
-  }
-
-  const searchTerm = `%${query.trim().toLowerCase()}%`
+  const term = `%${query.trim().toLowerCase()}%`
   let itemResults: SearchResultItem[] = []
   let locationResults: SearchResultItem[] = []
 
-  // Search items if filter allows
   if (filter === 'all' || filter === 'items') {
-    const { data: items, error: itemsError } = await supabase
-      .from('items')
-      .select(`
-        id,
-        name,
-        slug,
-        description,
-        created_at,
-        location:locations(name, slug)
-      `)
-      .eq('user_id', user.id)
-      .or(`name.ilike.${searchTerm},description.ilike.${searchTerm}`)
-      .order('name', { ascending: true })
-      .limit(50)
-
-    if (itemsError) {
-      return {
-        results: { items: [], locations: [], totalCount: 0 },
-        error: itemsError.message
-      }
-    }
-
-    itemResults = items.map((item: any) => ({
-      id: item.id,
-      name: item.name,
-      slug: item.slug,
-      description: item.description,
+    const rows = await sql`
+      SELECT i.id, i.name, i.slug, i.description, i.created_at,
+             l.name as location_name, l.slug as location_slug
+      FROM items i
+      LEFT JOIN locations l ON i.location_id = l.id
+      WHERE LOWER(i.name) LIKE ${term} OR LOWER(COALESCE(i.description, '')) LIKE ${term}
+      ORDER BY i.name ASC
+      LIMIT 50
+    `
+    itemResults = rows.map((r: any) => ({
+      id: r.id,
+      name: r.name,
+      slug: r.slug,
+      description: r.description,
       type: 'item' as const,
-      location: item.location && Array.isArray(item.location) && item.location[0] ? {
-        name: item.location[0].name,
-        slug: item.location[0].slug
-      } : null,
-      created_at: item.created_at
+      location: r.location_name ? { name: r.location_name, slug: r.location_slug } : null,
+      created_at: r.created_at,
     }))
   }
 
-  // Search locations if filter allows
   if (filter === 'all' || filter === 'locations') {
-    const { data: locations, error: locationsError } = await supabase
-      .from('locations')
-      .select(`
-        id,
-        name,
-        slug,
-        description,
-        created_at,
-        parent:parent_id(name, slug)
-      `)
-      .eq('user_id', user.id)
-      .or(`name.ilike.${searchTerm},description.ilike.${searchTerm}`)
-      .order('name', { ascending: true })
-      .limit(50)
-
-    if (locationsError) {
-      return {
-        results: { items: itemResults, locations: [], totalCount: itemResults.length },
-        error: locationsError.message
-      }
-    }
-
-    locationResults = locations.map((location: any) => ({
-      id: location.id,
-      name: location.name,
-      slug: location.slug,
-      description: location.description,
+    const rows = await sql`
+      SELECT l.id, l.name, l.slug, l.description, l.created_at,
+             p.name as parent_name, p.slug as parent_slug
+      FROM locations l
+      LEFT JOIN locations p ON l.parent_id = p.id
+      WHERE LOWER(l.name) LIKE ${term} OR LOWER(COALESCE(l.description, '')) LIKE ${term}
+      ORDER BY l.name ASC
+      LIMIT 50
+    `
+    locationResults = rows.map((r: any) => ({
+      id: r.id,
+      name: r.name,
+      slug: r.slug,
+      description: r.description,
       type: 'location' as const,
-      parent: location.parent && Array.isArray(location.parent) && location.parent[0] ? {
-        name: location.parent[0].name,
-        slug: location.parent[0].slug
-      } : null,
-      created_at: location.created_at
+      parent: r.parent_name ? { name: r.parent_name, slug: r.parent_slug } : null,
+      created_at: r.created_at,
     }))
   }
 
@@ -135,8 +79,8 @@ export async function searchItems(
     results: {
       items: itemResults,
       locations: locationResults,
-      totalCount: itemResults.length + locationResults.length
+      totalCount: itemResults.length + locationResults.length,
     },
-    error: null
+    error: null,
   }
 }

@@ -1,30 +1,13 @@
 import { getItem, updateItem } from '@/app/actions/items'
-import { createClient } from '@/lib/supabase/server'
+import { getLocations } from '@/app/actions/locations'
 import { redirect } from 'next/navigation'
 import { ItemForm } from '@/components/ItemForm'
-
-async function getAllLocations() {
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('locations')
-    .select('id, name, parent_id')
-    .order('name', { ascending: true })
-
-  return data || []
-}
 
 export default async function EditItemPage({
   params,
 }: {
   params: Promise<{ slug: string }>
 }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/login')
-  }
-
   const { slug } = await params
   const { item, error } = await getItem(slug)
 
@@ -32,11 +15,13 @@ export default async function EditItemPage({
     redirect('/items')
   }
 
-  const allLocations = await getAllLocations()
+  const itemId = item!.id
+  const { locations: allLocationsRaw } = await getLocations()
+  const allLocations = allLocationsRaw as Array<{ id: string; name: string }>
 
   async function updateItemWithId(formData: FormData) {
     'use server'
-    return updateItem(item.id, formData)
+    return updateItem(itemId, formData)
   }
 
   return (

@@ -1,16 +1,6 @@
 import { getLocations } from '../actions/locations'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
-
 export default async function LocationsPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/login')
-  }
-
   const { locations, error } = await getLocations(null)
 
   return (
