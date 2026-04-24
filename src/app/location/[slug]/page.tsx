@@ -1,5 +1,5 @@
 import { getLocation, getLocations, getLocationPath } from '@/app/actions/locations'
-import { createClient } from '@/lib/supabase/server'
+import { getItems } from '@/app/actions/items'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { DeleteLocationButton } from '@/components/DeleteLocationButton'
@@ -10,13 +10,6 @@ export default async function LocationDetailPage({
 }: {
   params: Promise<{ slug: string }>
 }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/login')
-  }
-
   const { slug } = await params
   const { location, error } = await getLocation(slug)
 
@@ -24,18 +17,11 @@ export default async function LocationDetailPage({
     redirect('/locations')
   }
 
-  // Get child locations
-  const { locations: childLocations } = await getLocations(location.id)
-
-  // Get items in this location
-  const { data: items } = await supabase
-    .from('items')
-    .select('*')
-    .eq('location_id', location.id)
-    .order('name', { ascending: true })
-
-  // Get breadcrumb path
-  const path = await getLocationPath(location.id)
+  const [{ locations: childLocations }, { items }, path] = await Promise.all([
+    getLocations(location.id),
+    getItems(location.id),
+    getLocationPath(location.id),
+  ])
 
   return (
     <div className="min-h-screen py-8">
@@ -166,7 +152,7 @@ export default async function LocationDetailPage({
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold text-slate-100">
-              Items ({items?.length || 0})
+              Items ({items.length})
             </h2>
             <Link
               href={`/items/new?location=${location.id}`}
@@ -180,7 +166,7 @@ export default async function LocationDetailPage({
             </Link>
           </div>
 
-          {!items || items.length === 0 ? (
+          {items.length === 0 ? (
             <div className="bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-8 text-center text-slate-500">
               No items in this location yet
             </div>

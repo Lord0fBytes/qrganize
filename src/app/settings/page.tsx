@@ -1,16 +1,7 @@
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
 import { getSettings } from '@/app/actions/settings'
 import { SettingsForm } from '@/components/SettingsForm'
 
 export default async function SettingsPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/login')
-  }
-
   const { settings, error } = await getSettings()
 
   if (error) {

@@ -1,18 +1,8 @@
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { QRScanner } from '@/components/QRScanner'
 import { getSettings } from '@/app/actions/settings'
 
 export default async function ScanPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/login')
-  }
-
-  // Get user settings for legacy QR support
   const { settings } = await getSettings()
   const legacyDomain = settings?.legacy_qr_domain || null
 

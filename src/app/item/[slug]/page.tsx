@@ -1,5 +1,4 @@
 import { getItem } from '@/app/actions/items'
-import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { DeleteItemButton } from '@/components/DeleteItemButton'
@@ -10,13 +9,6 @@ export default async function ItemDetailPage({
 }: {
   params: Promise<{ slug: string }>
 }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/login')
-  }
-
   const { slug } = await params
   const { item, error } = await getItem(slug)
 

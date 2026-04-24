@@ -1,5 +1,3 @@
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
 import { SearchInterface } from '@/components/SearchInterface'
 
 export default async function SearchPage({
@@ -7,13 +5,6 @@ export default async function SearchPage({
 }: {
   searchParams: Promise<{ q?: string; filter?: string }>
 }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/login')
-  }
-
   const params = await searchParams
   const initialQuery = params.q || ''
   const initialFilter = (params.filter as 'all' | 'items' | 'locations') || 'all'

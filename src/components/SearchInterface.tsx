@@ -79,7 +79,7 @@ export function SearchInterface({ initialQuery, initialFilter }: SearchInterface
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search items and locations..."
-            className="flex-1 px-4 py-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            className="flex-1 px-4 py-3 bg-slate-800 border border-slate-600 text-slate-100 rounded-md focus:ring-blue-500 focus:border-blue-500 placeholder-slate-400"
             autoFocus
           />
           <button
@@ -93,13 +93,13 @@ export function SearchInterface({ initialQuery, initialFilter }: SearchInterface
       </form>
 
       {/* Filter Tabs */}
-      <div className="mb-6 flex gap-2 border-b border-gray-200">
+      <div className="mb-6 flex gap-2 border-b border-slate-700">
         <button
           onClick={() => handleFilterChange('all')}
           className={`px-4 py-2 font-medium transition-colors border-b-2 ${
             filter === 'all'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-600 hover:text-gray-900'
+              ? 'border-blue-500 text-blue-400'
+              : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
           All ({results.totalCount})
@@ -108,8 +108,8 @@ export function SearchInterface({ initialQuery, initialFilter }: SearchInterface
           onClick={() => handleFilterChange('items')}
           className={`px-4 py-2 font-medium transition-colors border-b-2 ${
             filter === 'items'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-600 hover:text-gray-900'
+              ? 'border-blue-500 text-blue-400'
+              : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
           Items ({results.items.length})
@@ -118,8 +118,8 @@ export function SearchInterface({ initialQuery, initialFilter }: SearchInterface
           onClick={() => handleFilterChange('locations')}
           className={`px-4 py-2 font-medium transition-colors border-b-2 ${
             filter === 'locations'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-600 hover:text-gray-900'
+              ? 'border-blue-500 text-blue-400'
+              : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
           Locations ({results.locations.length})
@@ -128,8 +128,8 @@ export function SearchInterface({ initialQuery, initialFilter }: SearchInterface
 
       {/* Error State */}
       {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-800">Error: {error}</p>
+        <div className="mb-6 p-4 bg-red-900/30 border border-red-700/50 rounded-lg">
+          <p className="text-red-300">Error: {error}</p>
         </div>
       )}
 
@@ -144,8 +144,8 @@ export function SearchInterface({ initialQuery, initialFilter }: SearchInterface
           {results.totalCount === 0 ? (
             <div className="text-center py-12">
               <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-medium text-slate-200 mb-2">No results found</h3>
+              <p className="text-slate-400">
                 Try searching with different keywords
               </p>
             </div>
@@ -154,31 +154,31 @@ export function SearchInterface({ initialQuery, initialFilter }: SearchInterface
               {/* Items Results */}
               {(filter === 'all' || filter === 'items') && results.items.length > 0 && (
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900 mb-3">
+                  <h2 className="text-lg font-semibold text-slate-200 mb-3">
                     Items ({results.items.length})
                   </h2>
-                  <div className="bg-white rounded-lg shadow-sm divide-y divide-gray-200">
+                  <div className="bg-slate-800 border border-slate-700 rounded-lg shadow-sm divide-y divide-slate-700">
                     {results.items.map((item) => (
                       <Link
                         key={item.id}
                         href={`/item/${item.slug}`}
-                        className="block p-4 hover:bg-gray-50 transition-colors"
+                        className="block p-4 hover:bg-slate-700 transition-colors"
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
                               <span className="text-xl">📦</span>
-                              <h3 className="text-lg font-medium text-gray-900">
+                              <h3 className="text-lg font-medium text-slate-100">
                                 {item.name}
                               </h3>
                             </div>
                             {item.description && (
-                              <p className="mt-1 text-sm text-gray-600">
+                              <p className="mt-1 text-sm text-slate-400">
                                 {item.description}
                               </p>
                             )}
                             {item.location && (
-                              <p className="mt-1 text-sm text-gray-500">
+                              <p className="mt-1 text-sm text-slate-500">
                                 Location: <span className="font-medium">{item.location.name}</span>
                               </p>
                             )}
@@ -204,31 +204,31 @@ export function SearchInterface({ initialQuery, initialFilter }: SearchInterface
               {/* Locations Results */}
               {(filter === 'all' || filter === 'locations') && results.locations.length > 0 && (
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900 mb-3">
+                  <h2 className="text-lg font-semibold text-slate-200 mb-3">
                     Locations ({results.locations.length})
                   </h2>
-                  <div className="bg-white rounded-lg shadow-sm divide-y divide-gray-200">
+                  <div className="bg-slate-800 border border-slate-700 rounded-lg shadow-sm divide-y divide-slate-700">
                     {results.locations.map((location) => (
                       <Link
                         key={location.id}
                         href={`/location/${location.slug}`}
-                        className="block p-4 hover:bg-gray-50 transition-colors"
+                        className="block p-4 hover:bg-slate-700 transition-colors"
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
                               <span className="text-xl">📍</span>
-                              <h3 className="text-lg font-medium text-gray-900">
+                              <h3 className="text-lg font-medium text-slate-100">
                                 {location.name}
                               </h3>
                             </div>
                             {location.description && (
-                              <p className="mt-1 text-sm text-gray-600">
+                              <p className="mt-1 text-sm text-slate-400">
                                 {location.description}
                               </p>
                             )}
                             {location.parent && (
-                              <p className="mt-1 text-sm text-gray-500">
+                              <p className="mt-1 text-sm text-slate-500">
                                 Parent: <span className="font-medium">{location.parent.name}</span>
                               </p>
                             )}
@@ -259,8 +259,8 @@ export function SearchInterface({ initialQuery, initialFilter }: SearchInterface
       {!hasSearched && !loading && (
         <div className="text-center py-12">
           <div className="text-6xl mb-4">🔍</div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Start searching</h3>
-          <p className="text-gray-600">
+          <h3 className="text-lg font-medium text-slate-200 mb-2">Start searching</h3>
+          <p className="text-slate-400">
             Enter a search term to find items and locations
           </p>
         </div>

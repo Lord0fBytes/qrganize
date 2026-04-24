@@ -1,5 +1,4 @@
 import { getLocation, updateLocation } from '@/app/actions/locations'
-import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { LocationForm } from '@/components/LocationForm'
 
@@ -8,13 +7,6 @@ export default async function EditLocationPage({
 }: {
   params: Promise<{ slug: string }>
 }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/login')
-  }
-
   const { slug } = await params
   const { location, error } = await getLocation(slug)
 
@@ -22,9 +14,11 @@ export default async function EditLocationPage({
     redirect('/locations')
   }
 
+  const locationId = location!.id
+
   async function updateLocationWithId(formData: FormData) {
     'use server'
-    return updateLocation(location.id, formData)
+    return updateLocation(locationId, formData)
   }
 
   return (
