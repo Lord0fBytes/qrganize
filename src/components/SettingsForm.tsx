@@ -48,11 +48,11 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
               checked={enabled}
               onChange={(e) => setEnabled(e.target.checked)}
             />
-            <div className={`block w-14 h-8 rounded-full transition-colors ${enabled ? 'bg-blue-600' : 'bg-gray-300'}`}></div>
+            <div className={`block w-14 h-8 rounded-full transition-colors ${enabled ? 'bg-blue-600' : 'bg-slate-600'}`}></div>
             <div className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform ${enabled ? 'transform translate-x-6' : ''}`}></div>
           </div>
           <div className="ml-3">
-            <span className="font-medium text-gray-900">Enable Legacy QR Support</span>
+            <span className="font-medium text-slate-100">Enable Legacy QR Support</span>
           </div>
         </label>
       </div>
@@ -60,7 +60,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
       {/* Legacy Domain Input - only show if enabled */}
       {enabled && (
         <div className="mb-6">
-          <label htmlFor="domain" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="domain" className="block text-sm font-medium text-slate-300 mb-2">
             Legacy QR Code Domain (optional)
           </label>
           <input
@@ -69,9 +69,9 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
             value={domain}
             onChange={(e) => setDomain(e.target.value)}
             placeholder="e.g., http://localhost:3002 or https://old-app.com"
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border"
+            className="block w-full rounded-md bg-slate-700 border-slate-600 text-slate-100 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border placeholder-slate-400"
           />
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-slate-400">
             If your old QR codes use a different domain, enter it here. Leave blank if using the same domain.
           </p>
         </div>
@@ -80,7 +80,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
       {/* Radio Buttons - only show if enabled */}
       {enabled && (
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-3">
+          <label className="block text-sm font-medium text-slate-300 mb-3">
             Legacy QR codes redirect to:
           </label>
           <div className="space-y-3">
@@ -91,11 +91,11 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                 value="items"
                 checked={target === 'items'}
                 onChange={(e) => setTarget(e.target.value as LegacyQRTarget)}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-500 bg-slate-700"
               />
               <span className="ml-3">
-                <span className="font-medium text-gray-900">Items</span>
-                <span className="block text-sm text-gray-500">
+                <span className="font-medium text-slate-100">Items</span>
+                <span className="block text-sm text-slate-400">
                   Legacy QR codes will look up slugs in the items table
                 </span>
               </span>
@@ -107,11 +107,11 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                 value="locations"
                 checked={target === 'locations'}
                 onChange={(e) => setTarget(e.target.value as LegacyQRTarget)}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-500 bg-slate-700"
               />
               <span className="ml-3">
-                <span className="font-medium text-gray-900">Locations</span>
-                <span className="block text-sm text-gray-500">
+                <span className="font-medium text-slate-100">Locations</span>
+                <span className="block text-sm text-slate-400">
                   Legacy QR codes will look up slugs in the locations table
                 </span>
               </span>
@@ -122,8 +122,8 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
 
       {/* Message */}
       {message && (
-        <div className={`mb-4 p-4 rounded-lg ${message.type === 'success' ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
-          <p className={message.type === 'success' ? 'text-green-800' : 'text-red-800'}>
+        <div className={`mb-4 p-4 rounded-lg ${message.type === 'success' ? 'bg-emerald-900/30 border border-emerald-700/50' : 'bg-red-900/30 border border-red-700/50'}`}>
+          <p className={message.type === 'success' ? 'text-emerald-300' : 'text-red-300'}>
             {message.text}
           </p>
         </div>
@@ -134,7 +134,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
         <button
           type="submit"
           disabled={saving}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed font-medium transition-colors"
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed font-medium transition-colors"
         >
           {saving ? 'Saving...' : 'Save Settings'}
         </button>
