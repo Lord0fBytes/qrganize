@@ -40,6 +40,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Claude Code / local tooling
+.claude/
+.playwright-mcp/
+
 # PWA files
 **/public/sw.js
 **/public/workbox-*.js
