@@ -40,14 +40,14 @@ export default async function EditItemPage({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Edit Item</h1>
-          <p className="mt-2 text-gray-600">Update item details and location</p>
+          <h1 className="text-3xl font-bold text-slate-100">Edit Item</h1>
+          <p className="mt-2 text-slate-400">Update item details and location</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6">
           <ItemForm
             mode="edit"
             initialData={{

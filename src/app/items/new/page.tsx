@@ -39,24 +39,24 @@ export default async function NewItemPage({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-slate-100">
             Create New Item
           </h1>
           {selectedLocation && (
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 text-slate-400">
               In location: <span className="font-medium">{selectedLocation.name}</span>
             </p>
           )}
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6">
           {prefilledSlug && (
-            <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-800">
-                <span className="font-medium">Legacy QR Code detected!</span> Creating item with slug: <code className="bg-blue-100 px-2 py-1 rounded">{prefilledSlug}</code>
+            <div className="mb-4 p-4 bg-blue-900/30 border border-blue-700/50 rounded-lg">
+              <p className="text-sm text-blue-200">
+                <span className="font-medium">Legacy QR Code detected!</span> Creating item with slug: <code className="bg-blue-800/50 px-2 py-1 rounded">{prefilledSlug}</code>
               </p>
             </div>
           )}

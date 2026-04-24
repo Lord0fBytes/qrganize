@@ -28,14 +28,14 @@ export default async function EditLocationPage({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Edit Location</h1>
-          <p className="mt-2 text-gray-600">Update location details</p>
+          <h1 className="text-3xl font-bold text-slate-100">Edit Location</h1>
+          <p className="mt-2 text-slate-400">Update location details</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6">
           <LocationForm
             mode="edit"
             initialData={{
