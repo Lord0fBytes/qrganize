@@ -158,7 +158,7 @@ export function QRScanner({ legacyDomain }: QRScannerProps) {
             className={`flex-1 px-4 py-2 rounded-md font-medium transition-colors ${
               scanMode === 'camera'
                 ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
             }`}
           >
             📷 Camera
@@ -168,7 +168,7 @@ export function QRScanner({ legacyDomain }: QRScannerProps) {
             className={`flex-1 px-4 py-2 rounded-md font-medium transition-colors ${
               scanMode === 'file'
                 ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
             }`}
           >
             🖼️ Upload Image
@@ -193,7 +193,7 @@ export function QRScanner({ legacyDomain }: QRScannerProps) {
 
         {/* File upload mode */}
         {scanMode === 'file' && (
-          <div className="bg-gray-100 rounded-lg p-8 text-center border-2 border-dashed border-gray-300">
+          <div className="bg-slate-800 rounded-lg p-8 text-center border-2 border-dashed border-slate-600">
             <div id="qr-reader-file" className="hidden" />
             <input
               ref={fileInputRef}
@@ -209,10 +209,10 @@ export function QRScanner({ legacyDomain }: QRScannerProps) {
               className="cursor-pointer flex flex-col items-center"
             >
               <div className="text-6xl mb-4">📸</div>
-              <p className="text-gray-700 font-medium mb-2">
+              <p className="text-slate-200 font-medium mb-2">
                 Tap to select QR code image
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-slate-400">
                 Choose from camera roll or take a photo
               </p>
             </label>
@@ -221,18 +221,18 @@ export function QRScanner({ legacyDomain }: QRScannerProps) {
 
         {/* Status messages */}
         {isScanning && scanMode === 'camera' && !error && (
-          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
-            <p className="text-blue-800 font-medium">📷 Camera active</p>
-            <p className="text-blue-600 text-sm mt-1">
+          <div className="mt-4 p-4 bg-blue-900/30 border border-blue-700/50 rounded-lg text-center">
+            <p className="text-blue-300 font-medium">📷 Camera active</p>
+            <p className="text-blue-400 text-sm mt-1">
               Point your camera at a QR code to scan
             </p>
           </div>
         )}
 
         {error && (
-          <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-800 font-medium mb-2">⚠️ Error</p>
-            <p className="text-red-600 text-sm mb-3">{error}</p>
+          <div className="mt-4 p-4 bg-red-900/30 border border-red-700/50 rounded-lg">
+            <p className="text-red-300 font-medium mb-2">⚠️ Error</p>
+            <p className="text-red-400 text-sm mb-3">{error}</p>
             {scanMode === 'camera' && (
               <button
                 onClick={handleRetry}
@@ -245,24 +245,24 @@ export function QRScanner({ legacyDomain }: QRScannerProps) {
         )}
 
         {lastScanned && !error && (
-          <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-            <p className="text-green-800 font-medium mb-2">✓ Scanned successfully</p>
-            <p className="text-green-600 text-sm break-all">{lastScanned}</p>
+          <div className="mt-4 p-4 bg-emerald-900/30 border border-emerald-700/50 rounded-lg">
+            <p className="text-emerald-300 font-medium mb-2">✓ Scanned successfully</p>
+            <p className="text-emerald-400 text-sm break-all">{lastScanned}</p>
           </div>
         )}
 
         {/* Instructions */}
-        <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-          <h3 className="font-medium text-gray-900 mb-2">Tips:</h3>
+        <div className="mt-6 p-4 bg-slate-800 border border-slate-700 rounded-lg">
+          <h3 className="font-medium text-slate-200 mb-2">Tips:</h3>
           {scanMode === 'camera' ? (
-            <ul className="text-sm text-gray-600 space-y-1">
+            <ul className="text-sm text-slate-400 space-y-1">
               <li>• Hold your device steady</li>
               <li>• Ensure good lighting</li>
               <li>• Keep the QR code within the frame</li>
               <li>• Only QRganize codes will work</li>
             </ul>
           ) : (
-            <ul className="text-sm text-gray-600 space-y-1">
+            <ul className="text-sm text-slate-400 space-y-1">
               <li>• Take a clear photo of the QR code</li>
               <li>• Ensure good lighting and focus</li>
               <li>• Avoid glare or shadows</li>
