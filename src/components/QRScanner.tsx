@@ -10,6 +10,7 @@ interface QRScannerProps {
 
 export function QRScanner({ legacyDomain }: QRScannerProps) {
   const scannerRef = useRef<Html5Qrcode | null>(null)
+  const isStartingRef = useRef(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isScanning, setIsScanning] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -37,6 +38,8 @@ export function QRScanner({ legacyDomain }: QRScannerProps) {
   }, [])
 
   const startScanner = async () => {
+    if (isStartingRef.current || scannerRef.current) return
+    isStartingRef.current = true
     try {
       setError(null)
       const scanner = new Html5Qrcode('qr-reader')
@@ -56,20 +59,25 @@ export function QRScanner({ legacyDomain }: QRScannerProps) {
       setScanMode('camera')
     } catch (err) {
       console.error('Error starting scanner:', err)
-      // Switch to file mode if camera fails
+      scannerRef.current = null
       setScanMode('file')
       setError('Camera not available. Please upload a QR code image instead.')
+    } finally {
+      isStartingRef.current = false
     }
   }
 
   const stopScanner = async () => {
-    if (scannerRef.current && isScanning) {
+    const scanner = scannerRef.current
+    if (scanner) {
+      scannerRef.current = null
       try {
-        await scannerRef.current.stop()
-        scannerRef.current.clear()
+        await scanner.stop()
+        scanner.clear()
       } catch (err) {
         console.error('Error stopping scanner:', err)
       }
+      setIsScanning(false)
     }
   }
 
