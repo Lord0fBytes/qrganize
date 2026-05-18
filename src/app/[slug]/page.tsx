@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { redirect } from 'next/navigation'
 import { getSettings } from '@/app/actions/settings'
 import { sql } from '@/lib/db'
