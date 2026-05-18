@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { createLocation, getLocation } from '@/app/actions/locations'
 import { LocationForm } from '@/components/LocationForm'
 

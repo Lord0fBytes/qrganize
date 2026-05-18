@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getLocation, updateLocation } from '@/app/actions/locations'
 import { redirect } from 'next/navigation'
 import { LocationForm } from '@/components/LocationForm'

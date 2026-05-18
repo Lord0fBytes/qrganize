@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getItem, updateItem } from '@/app/actions/items'
 import { getLocations } from '@/app/actions/locations'
 import { redirect } from 'next/navigation'

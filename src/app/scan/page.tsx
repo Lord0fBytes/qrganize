@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import Link from 'next/link'
 import { QRScanner } from '@/components/QRScanner'
 import { getSettings } from '@/app/actions/settings'

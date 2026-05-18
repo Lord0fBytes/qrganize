@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { createItem } from '@/app/actions/items'
 import { getLocations, getLocation } from '@/app/actions/locations'
 import { ItemForm } from '@/components/ItemForm'
